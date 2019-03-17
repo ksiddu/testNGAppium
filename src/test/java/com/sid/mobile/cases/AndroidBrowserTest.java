@@ -32,7 +32,7 @@ public class AndroidBrowserTest {
 		wait = new WebDriverWait(driver, 20);
 	}
 
-	@Test
+	@Test(enabled = false)
 	public void testLoginWithValidCredentials() throws InterruptedException {
 
 		String loginUrl = prop.getValue("login_url");
@@ -67,6 +67,36 @@ public class AndroidBrowserTest {
 		signOutBtn.click();
 
 		Assert.assertEquals(driver.getTitle(), prop.getValue("loginpage_title"));
+
+	}
+
+	@Test(enabled = true)
+	public void testLoginWithInValidCredentials() {
+		String loginUrl = prop.getValue("login_url");
+		driver.get(loginUrl);
+
+		WebElement signInLink = driver.findElement(By.linkText("Sign in"));
+
+		System.out.println("HOME PAGE TITLE: " + driver.getTitle());
+		Assert.assertEquals(driver.getTitle(), prop.getValue("homepage_title"));
+
+		signInLink.click();
+		System.out.println("LOGIN PAGE TITLE: " + driver.getTitle());
+		Assert.assertEquals(driver.getTitle(), prop.getValue("loginpage_title"));
+
+		WebElement userName = driver.findElement(By.id("email"));
+		WebElement password = driver.findElement(By.id("passwd"));
+		WebElement button = driver.findElement(By.id("SubmitLogin"));
+
+		userName.sendKeys(prop.getValue("username"));
+		password.sendKeys(prop.getValue("password"));
+
+		wait.until(ExpectedConditions.elementToBeClickable(button));
+		button.click();
+
+		WebElement errorMsg = driver.findElement(By.cssSelector(".center_column > .alert.alert-danger"));
+
+		Assert.assertEquals(errorMsg.getText(), "There is 1 error\n" + "Authentication failed.");
 
 	}
 

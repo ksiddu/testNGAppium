@@ -17,3 +17,6 @@ target/
 
 # TestNG
 test-output/
+
+# Allure Report
+allure-results/
