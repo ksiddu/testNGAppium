@@ -18,7 +18,7 @@ import org.testng.annotations.AfterMethod;
 
 public class IosBrowserTest {
 	AppiumDriver<WebElement> driver;
-	PropertyUtils prop = new PropertyUtils();
+	PropertyUtils prop = new PropertyUtils("src/test/resources/config.properties");
 
 	@BeforeMethod
 	public void beforeMethod() throws MalformedURLException {

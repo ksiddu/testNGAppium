@@ -21,7 +21,7 @@ import org.testng.annotations.AfterMethod;
 
 public class AndroidBrowserTest {
 	AppiumDriver<WebElement> driver;
-	PropertyUtils prop = new PropertyUtils();
+	PropertyUtils prop = new PropertyUtils("src/test/resources/config.properties");
 	WebDriverWait wait;
 
 	@BeforeMethod

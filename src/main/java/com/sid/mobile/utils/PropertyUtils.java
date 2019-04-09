@@ -1,27 +1,23 @@
 package com.sid.mobile.utils;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
 public class PropertyUtils {
-	public Properties properties;
+	Properties properties;
 	FileInputStream fis;
+	String filePath;
 
-	public PropertyUtils() {
+	public PropertyUtils(String fileName) {
+		filePath = fileName;
 		try {
 			properties = new Properties();
-			String propFileName = "src/test/resources/config.properties";
-			// String propFileName = "config.properties";
-
-			// inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
-			fis = new FileInputStream(propFileName);
-
+			fis = new FileInputStream(filePath);
 			if (fis != null) {
 				properties.load(fis);
 			} else {
-				System.out.println("property file '" + propFileName + "' not found in the classpath");
+				System.out.println("property file '" + fileName + "' not found in the classpath");
 			}
 		} catch (IOException ex) {
 			ex.printStackTrace();
@@ -36,19 +32,20 @@ public class PropertyUtils {
 				}
 			}
 		}
-
 	}
 
 	public String getValue(String key) {
 		return properties.getProperty(key);
 	}
 
-	public static void main(String args[]) throws IOException {
-
-		PropertyUtils obj = new PropertyUtils();
+	public static void main(String[] args) throws IOException {
+		// TODO Auto-generated method stub
+		String propFilePath = "src/test/resources/config.properties";
+		PropertyUtils obj = new PropertyUtils(propFilePath);
 
 		System.out.println("USERNAME: " + obj.getValue("username"));
 		System.out.println("PASSWORD: " + obj.getValue("password"));
+
 	}
 
 }
