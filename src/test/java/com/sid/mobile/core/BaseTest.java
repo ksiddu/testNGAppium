@@ -12,6 +12,7 @@ import io.appium.java_client.AppiumDriver;
 public abstract class BaseTest {
 
 	protected AppiumDriver<WebElement> driver;
+	protected Pages pages;
 	protected PropertyUtils prop = new PropertyUtils("src/test/resources/config.properties");
 
 	public AppiumDriver<WebElement> getDriver(String platform, String type) throws MalformedURLException {
@@ -47,7 +48,7 @@ public abstract class BaseTest {
 
 		try {
 			driver = getDriver(prop.getValue("platform"), prop.getValue("type"));
-			// pages = new Pages(driver);
+			pages = new Pages(driver);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

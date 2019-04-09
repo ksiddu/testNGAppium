@@ -3,6 +3,8 @@ package com.sid.mobile.core;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
+
 import io.appium.java_client.AppiumDriver;
 
 public abstract class BasePage {
@@ -16,6 +18,18 @@ public abstract class BasePage {
 		this.driver = driver;
 		wait = new WebDriverWait(driver, TIMEOUT, POLLING);
 		PageFactory.initElements(driver, this);
+	}
+
+	public void goToUrl(String url) {
+		driver.get(url);
+	}
+
+	public void verifyTitle(String title) {
+		Assert.assertEquals(driver.getTitle(), title);
+	}
+
+	public void verifyText(WebElement ele, String text) {
+		Assert.assertEquals(ele.getText(), text);
 	}
 
 }

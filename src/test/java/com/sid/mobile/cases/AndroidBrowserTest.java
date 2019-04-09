@@ -51,8 +51,13 @@ public class AndroidBrowserTest {
 		WebElement password = driver.findElement(By.id("passwd"));
 		WebElement button = driver.findElement(By.id("SubmitLogin"));
 
+		System.out.println("Email - " + prop.getValue("username"));
+		System.out.println("PASSWORD - " + prop.getValue("password"));
+		
 		userName.sendKeys(prop.getValue("username"));
 		password.sendKeys(prop.getValue("password"));
+		
+		
 
 		wait.until(ExpectedConditions.elementToBeClickable(button));
 		button.click();
