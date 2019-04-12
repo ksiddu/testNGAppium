@@ -2,6 +2,8 @@ package com.sid.mobile.utils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.WebElement;
@@ -70,5 +72,34 @@ public class DriverProvider {
 		mdriver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
 		return mdriver;
 	}
+	
+	public static DesiredCapabilities getCapabilities(String platformName, String platformVersion, String deviceName, String browserName) {
+		capabilities = null;
+		capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, platformName); // Android / iOS
+		capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, platformVersion); // 8.1 / 11.0
+		capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, deviceName); // emulator-5554 / emulator-5554
+		capabilities.setCapability(MobileCapabilityType.BROWSER_NAME, browserName); // Chrome / Safari
+		return capabilities;
+	}
+	
+	public static AppiumDriver<MobileElement> getAndroidMobileDriverTemp() throws MalformedURLException {
+		Path currentRelativePath = Paths.get("");
+		String appPath = currentRelativePath.toAbsolutePath().toString();
+		appPath =  appPath + "/apps/VodQA.apk";
+		
+		System.out.println("APP PATH :" + appPath);
+		capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, "Android");
+		capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "8.1");
+		capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "emulator-5554");
+		capabilities.setCapability(MobileCapabilityType.APP, appPath);
+		capabilities.setCapability("noReset", false);
+		
 
+		// Instantiate android mobile driver
+		mdriver = new AndroidDriver<MobileElement>(new URL("http://0.0.0.0:4723/wd/hub"), capabilities);
+
+		mdriver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
+		return mdriver;
+		
+	}
 }
