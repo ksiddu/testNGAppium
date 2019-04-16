@@ -1,10 +1,10 @@
 package com.sid.mobile.cases;
 
+import static org.testng.Assert.assertNotNull;
+
 import java.net.MalformedURLException;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -17,7 +17,7 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileBy;
 import io.appium.java_client.MobileElement;
 
-public class MobileAppTest {
+public class DemoAppVerticalSwipeTest {
 	AppiumDriver<MobileElement> driver;
 	PropertyUtils prop = new PropertyUtils("src/test/resources/config.properties");
 	WebDriverWait wait;
@@ -31,10 +31,7 @@ public class MobileAppTest {
 	}
 
 	@Test(enabled = true)
-	public void testLoginWithValidCredentials() throws InterruptedException {
-
-		// MobileElement loginBtn =
-		// driver.findElementByXPath("//android.view.ViewGroup[@content-desc='login']");
+	public void testDemoAppVerticalSwipe() throws InterruptedException {
 
 		MobileElement loginBtn = driver.findElement(MobileBy.AccessibilityId("login"));
 
@@ -47,16 +44,6 @@ public class MobileAppTest {
 
 		Thread.sleep(2000);
 
-		/*
-		MobileElement btnNativeView = driver.findElementByAccessibilityId("chainedView");
-		MobileElement btnSlider = driver.findElementByAccessibilityId("slider1");
-		MobileElement btnVerticalSwipe = driver.findElementByAccessibilityId("verticalSwipe");
-		MobileElement btnDragAndDrop = driver.findElementByAccessibilityId("dragAndDrop");
-		MobileElement btnDoubleTap = driver.findElementByAccessibilityId("doubleTap");
-		MobileElement btnLongPress = driver.findElementByAccessibilityId("longPress");
-		MobileElement btnPhotoView = driver.findElementByAccessibilityId("photoView");
-		*/
-		
 		MobileElement btnNativeView = driver.findElement(MobileBy.AccessibilityId("chainedView"));
 		MobileElement btnSlider = driver.findElement(MobileBy.AccessibilityId("slider1"));
 		MobileElement btnVerticalSwipe = driver.findElement(MobileBy.AccessibilityId("verticalSwipe"));
@@ -65,41 +52,39 @@ public class MobileAppTest {
 		MobileElement btnLongPress = driver.findElement(MobileBy.AccessibilityId("longPress"));
 		MobileElement btnPhotoView = driver.findElement(MobileBy.AccessibilityId("photoView"));
 
-		System.out.println("=======================================");
+		btnVerticalSwipe.click();
 
-		System.out.println("Label 1 :" + btnNativeView.getAttribute("text"));
+		// Code to scroll to specific element
 
-		System.out.println("Label 2 :" + btnSlider.getAttribute("text"));
+		/*
+		 * Dimension size = driver.manage().window().getSize();
+		 * 
+		 * int startX = size.width / 2; int startY = (int) (size.height * 0.60); int
+		 * endY = (int) (size.height * 0.30);
+		 * 
+		 * 
+		 * AndroidTouchAction action = new AndroidTouchAction(driver);
+		 * 
+		 * action.moveTo(PointOption.point(startX,
+		 * endY)).press(PointOption.point(startX, startY))
+		 * .waitAction(WaitOptions.waitOptions(Duration.ofSeconds(5))).moveTo(
+		 * PointOption.point(startX, endY)) .release().perform();
+		 */
 
-		System.out.println("Label 3 :" + btnVerticalSwipe.getAttribute("text"));
+		MobileElement list = driver.findElement(MobileBy.AccessibilityId("listview"));
 
-		System.out.println("Label 4 :" + btnDragAndDrop.getAttribute("text"));
+		MobileElement listGroup = list.findElement(MobileBy.AndroidUIAutomator(
+				"new UiScrollable(new UiSelector()).scrollIntoView(" + "new UiSelector().text(\" Jasmine\"));"));
+		assertNotNull(listGroup.getLocation());
 
-		System.out.println("Label 5 :" + btnDoubleTap.getAttribute("text"));
-
-		System.out.println("Label 6 :" + btnLongPress.getAttribute("text"));
-
-		System.out.println("Label 7 :" + btnPhotoView.getAttribute("text"));
-
-		System.out.println("=======================================");
-
-		//List<MobileElement> list1 = driver.findElementsByClassName("android.view.ViewGroup");
-
-		//list1.get(4).click();
-		
-		btnNativeView.click();
-
-		List<MobileElement> list2 = driver.findElementsByClassName("android.widget.TextView");
-
-		System.out.println("LIST SIZE  On Clicking : " + list2.size());
-
-		System.out.println("Label On Clicking : " + list2.get(4).getText());
+		listGroup.click();
 
 	}
 
 	@AfterMethod
 	public void afterMethod() throws InterruptedException {
 		Thread.sleep(5000);
+		driver.closeApp();
 		driver.quit();
 	}
 

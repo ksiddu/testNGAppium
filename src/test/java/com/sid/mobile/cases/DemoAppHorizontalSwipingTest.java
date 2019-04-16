@@ -1,10 +1,10 @@
 package com.sid.mobile.cases;
 
 import java.net.MalformedURLException;
-import java.util.List;
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
-import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -16,8 +16,11 @@ import com.sid.mobile.utils.PropertyUtils;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileBy;
 import io.appium.java_client.MobileElement;
+import io.appium.java_client.android.AndroidTouchAction;
+import io.appium.java_client.touch.WaitOptions;
+import io.appium.java_client.touch.offset.PointOption;
 
-public class MobileAppTest {
+public class DemoAppHorizontalSwipingTest {
 	AppiumDriver<MobileElement> driver;
 	PropertyUtils prop = new PropertyUtils("src/test/resources/config.properties");
 	WebDriverWait wait;
@@ -31,10 +34,7 @@ public class MobileAppTest {
 	}
 
 	@Test(enabled = true)
-	public void testLoginWithValidCredentials() throws InterruptedException {
-
-		// MobileElement loginBtn =
-		// driver.findElementByXPath("//android.view.ViewGroup[@content-desc='login']");
+	public void testDemoAppHorizontalSwiping() throws InterruptedException {
 
 		MobileElement loginBtn = driver.findElement(MobileBy.AccessibilityId("login"));
 
@@ -47,16 +47,6 @@ public class MobileAppTest {
 
 		Thread.sleep(2000);
 
-		/*
-		MobileElement btnNativeView = driver.findElementByAccessibilityId("chainedView");
-		MobileElement btnSlider = driver.findElementByAccessibilityId("slider1");
-		MobileElement btnVerticalSwipe = driver.findElementByAccessibilityId("verticalSwipe");
-		MobileElement btnDragAndDrop = driver.findElementByAccessibilityId("dragAndDrop");
-		MobileElement btnDoubleTap = driver.findElementByAccessibilityId("doubleTap");
-		MobileElement btnLongPress = driver.findElementByAccessibilityId("longPress");
-		MobileElement btnPhotoView = driver.findElementByAccessibilityId("photoView");
-		*/
-		
 		MobileElement btnNativeView = driver.findElement(MobileBy.AccessibilityId("chainedView"));
 		MobileElement btnSlider = driver.findElement(MobileBy.AccessibilityId("slider1"));
 		MobileElement btnVerticalSwipe = driver.findElement(MobileBy.AccessibilityId("verticalSwipe"));
@@ -65,41 +55,45 @@ public class MobileAppTest {
 		MobileElement btnLongPress = driver.findElement(MobileBy.AccessibilityId("longPress"));
 		MobileElement btnPhotoView = driver.findElement(MobileBy.AccessibilityId("photoView"));
 
-		System.out.println("=======================================");
+		btnSlider.click();
 
-		System.out.println("Label 1 :" + btnNativeView.getAttribute("text"));
+		// Code to drag & drop with Java-Client:7.0.0
 
-		System.out.println("Label 2 :" + btnSlider.getAttribute("text"));
+		MobileElement slider = driver.findElementByAccessibilityId("slider");
+		Dimension size = slider.getSize();
 
-		System.out.println("Label 3 :" + btnVerticalSwipe.getAttribute("text"));
+		AndroidTouchAction touch = new AndroidTouchAction(driver);
 
-		System.out.println("Label 4 :" + btnDragAndDrop.getAttribute("text"));
+		// Get start point of seekbar.
+		int xAxisStartPoint = slider.getLocation().getX();
 
-		System.out.println("Label 5 :" + btnDoubleTap.getAttribute("text"));
+		// Get width of seekbar.
+		int xAxisEndPoint = xAxisStartPoint + slider.getSize().getWidth();
 
-		System.out.println("Label 6 :" + btnLongPress.getAttribute("text"));
+		// Get vertical location of seekbar.
+		int yAxis = slider.getLocation().getY();
 
-		System.out.println("Label 7 :" + btnPhotoView.getAttribute("text"));
+		// To slide half of the bar
+		touch.press(PointOption.point(xAxisStartPoint, yAxis))
+				.waitAction(WaitOptions.waitOptions(Duration.ofSeconds(10)))
+				.moveTo(PointOption.point(xAxisEndPoint / 2, yAxis)).release().perform();
 
-		System.out.println("=======================================");
+		/*
+		 * // To slide till end of the bar
+		 * touch.press(PointOption.point(xAxisStartPoint, yAxis))
+		 * .waitAction(WaitOptions.waitOptions(Duration.ofSeconds(10)))
+		 * .moveTo(PointOption.point(xAxisEndPoint / 2, yAxis)).release().perform();
+		 * 
+		 */
 
-		//List<MobileElement> list1 = driver.findElementsByClassName("android.view.ViewGroup");
-
-		//list1.get(4).click();
-		
-		btnNativeView.click();
-
-		List<MobileElement> list2 = driver.findElementsByClassName("android.widget.TextView");
-
-		System.out.println("LIST SIZE  On Clicking : " + list2.size());
-
-		System.out.println("Label On Clicking : " + list2.get(4).getText());
+		// https://discuss.appium.io/t/how-to-handle-drag-seek-bar-in-android/5864/7
 
 	}
 
 	@AfterMethod
 	public void afterMethod() throws InterruptedException {
 		Thread.sleep(5000);
+		driver.closeApp();
 		driver.quit();
 	}
 

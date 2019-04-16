@@ -1,11 +1,11 @@
 package com.sid.mobile.cases;
 
 import java.net.MalformedURLException;
-import java.util.List;
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -16,8 +16,11 @@ import com.sid.mobile.utils.PropertyUtils;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileBy;
 import io.appium.java_client.MobileElement;
+import io.appium.java_client.TouchAction;
+import io.appium.java_client.touch.LongPressOptions;
+import io.appium.java_client.touch.offset.ElementOption;
 
-public class MobileAppTest {
+public class DemoAppLongPressTest {
 	AppiumDriver<MobileElement> driver;
 	PropertyUtils prop = new PropertyUtils("src/test/resources/config.properties");
 	WebDriverWait wait;
@@ -31,10 +34,7 @@ public class MobileAppTest {
 	}
 
 	@Test(enabled = true)
-	public void testLoginWithValidCredentials() throws InterruptedException {
-
-		// MobileElement loginBtn =
-		// driver.findElementByXPath("//android.view.ViewGroup[@content-desc='login']");
+	public void testDemoAppLongPress() throws InterruptedException {
 
 		MobileElement loginBtn = driver.findElement(MobileBy.AccessibilityId("login"));
 
@@ -47,16 +47,6 @@ public class MobileAppTest {
 
 		Thread.sleep(2000);
 
-		/*
-		MobileElement btnNativeView = driver.findElementByAccessibilityId("chainedView");
-		MobileElement btnSlider = driver.findElementByAccessibilityId("slider1");
-		MobileElement btnVerticalSwipe = driver.findElementByAccessibilityId("verticalSwipe");
-		MobileElement btnDragAndDrop = driver.findElementByAccessibilityId("dragAndDrop");
-		MobileElement btnDoubleTap = driver.findElementByAccessibilityId("doubleTap");
-		MobileElement btnLongPress = driver.findElementByAccessibilityId("longPress");
-		MobileElement btnPhotoView = driver.findElementByAccessibilityId("photoView");
-		*/
-		
 		MobileElement btnNativeView = driver.findElement(MobileBy.AccessibilityId("chainedView"));
 		MobileElement btnSlider = driver.findElement(MobileBy.AccessibilityId("slider1"));
 		MobileElement btnVerticalSwipe = driver.findElement(MobileBy.AccessibilityId("verticalSwipe"));
@@ -65,35 +55,26 @@ public class MobileAppTest {
 		MobileElement btnLongPress = driver.findElement(MobileBy.AccessibilityId("longPress"));
 		MobileElement btnPhotoView = driver.findElement(MobileBy.AccessibilityId("photoView"));
 
-		System.out.println("=======================================");
+		btnLongPress.click();
 
-		System.out.println("Label 1 :" + btnNativeView.getAttribute("text"));
+		// Code to long press with Java-Client:7.0.0
 
-		System.out.println("Label 2 :" + btnSlider.getAttribute("text"));
-
-		System.out.println("Label 3 :" + btnVerticalSwipe.getAttribute("text"));
-
-		System.out.println("Label 4 :" + btnDragAndDrop.getAttribute("text"));
-
-		System.out.println("Label 5 :" + btnDoubleTap.getAttribute("text"));
-
-		System.out.println("Label 6 :" + btnLongPress.getAttribute("text"));
-
-		System.out.println("Label 7 :" + btnPhotoView.getAttribute("text"));
-
-		System.out.println("=======================================");
-
-		//List<MobileElement> list1 = driver.findElementsByClassName("android.view.ViewGroup");
-
-		//list1.get(4).click();
+		MobileElement btnToPress = driver.findElement(MobileBy.AccessibilityId("longpress"));
+		LongPressOptions longPressOptions = new LongPressOptions();
+		longPressOptions.withDuration(Duration.ofSeconds(4)).withElement(ElementOption.element(btnToPress));
+		new TouchAction(driver).longPress(longPressOptions).perform();
 		
-		btnNativeView.click();
+		MobileElement title = driver.findElementById("android:id/alertTitle");
+		MobileElement msgSuccess = driver.findElementById("android:id/message");
+		MobileElement btnOK = driver.findElementById("android:id/button1");
+		
+		Assert.assertEquals(title.getText(), "Long Pressed");
+		Assert.assertEquals(msgSuccess.getText(), "you pressed me hard :P");
+		Assert.assertEquals(btnOK.getText(), "OK");
+		
+		btnOK.click();
 
-		List<MobileElement> list2 = driver.findElementsByClassName("android.widget.TextView");
-
-		System.out.println("LIST SIZE  On Clicking : " + list2.size());
-
-		System.out.println("Label On Clicking : " + list2.get(4).getText());
+		Assert.assertTrue(btnToPress.isDisplayed() && btnToPress.isEnabled());
 
 	}
 

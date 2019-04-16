@@ -1,11 +1,11 @@
 package com.sid.mobile.cases;
 
 import java.net.MalformedURLException;
-import java.util.List;
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -16,8 +16,11 @@ import com.sid.mobile.utils.PropertyUtils;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileBy;
 import io.appium.java_client.MobileElement;
+import io.appium.java_client.android.AndroidTouchAction;
+import io.appium.java_client.touch.WaitOptions;
+import io.appium.java_client.touch.offset.ElementOption;
 
-public class MobileAppTest {
+public class DemoAppDoubleTapTest {
 	AppiumDriver<MobileElement> driver;
 	PropertyUtils prop = new PropertyUtils("src/test/resources/config.properties");
 	WebDriverWait wait;
@@ -31,10 +34,7 @@ public class MobileAppTest {
 	}
 
 	@Test(enabled = true)
-	public void testLoginWithValidCredentials() throws InterruptedException {
-
-		// MobileElement loginBtn =
-		// driver.findElementByXPath("//android.view.ViewGroup[@content-desc='login']");
+	public void testDemoAppDoubleTap() throws InterruptedException {
 
 		MobileElement loginBtn = driver.findElement(MobileBy.AccessibilityId("login"));
 
@@ -47,16 +47,6 @@ public class MobileAppTest {
 
 		Thread.sleep(2000);
 
-		/*
-		MobileElement btnNativeView = driver.findElementByAccessibilityId("chainedView");
-		MobileElement btnSlider = driver.findElementByAccessibilityId("slider1");
-		MobileElement btnVerticalSwipe = driver.findElementByAccessibilityId("verticalSwipe");
-		MobileElement btnDragAndDrop = driver.findElementByAccessibilityId("dragAndDrop");
-		MobileElement btnDoubleTap = driver.findElementByAccessibilityId("doubleTap");
-		MobileElement btnLongPress = driver.findElementByAccessibilityId("longPress");
-		MobileElement btnPhotoView = driver.findElementByAccessibilityId("photoView");
-		*/
-		
 		MobileElement btnNativeView = driver.findElement(MobileBy.AccessibilityId("chainedView"));
 		MobileElement btnSlider = driver.findElement(MobileBy.AccessibilityId("slider1"));
 		MobileElement btnVerticalSwipe = driver.findElement(MobileBy.AccessibilityId("verticalSwipe"));
@@ -65,41 +55,50 @@ public class MobileAppTest {
 		MobileElement btnLongPress = driver.findElement(MobileBy.AccessibilityId("longPress"));
 		MobileElement btnPhotoView = driver.findElement(MobileBy.AccessibilityId("photoView"));
 
-		System.out.println("=======================================");
+		btnDoubleTap.click();
 
-		System.out.println("Label 1 :" + btnNativeView.getAttribute("text"));
+		AndroidTouchAction touch = new AndroidTouchAction(driver);
+		MobileElement btnTap = driver.findElement(MobileBy.AccessibilityId("doubleTapMe"));
 
-		System.out.println("Label 2 :" + btnSlider.getAttribute("text"));
+		/*
+		 * TouchActions action = new TouchActions(driver); action.doubleTap(btnTap);
+		 * action.perform();
+		 */
 
-		System.out.println("Label 3 :" + btnVerticalSwipe.getAttribute("text"));
+		touch.press(ElementOption.element(btnTap)).release().perform()
+				.waitAction(WaitOptions.waitOptions(Duration.ofMillis(1))).press(ElementOption.element(btnTap))
+				.release().perform();
 
-		System.out.println("Label 4 :" + btnDragAndDrop.getAttribute("text"));
+		/*
+		 * 
+		 * TouchAction actionOne = new TouchAction(driver);
+		 * actionOne.press(ElementOption.element(btnTap));
+		 * actionOne.moveTo(ElementOption.element(btnTap)); actionOne.release();
+		 * TouchAction actionTwo = new TouchAction(driver);
+		 * actionTwo.press(ElementOption.element(btnTap));
+		 * actionTwo.moveTo(ElementOption.element(btnTap)); actionTwo.release();
+		 * MultiTouchAction action = new MultiTouchAction(driver);
+		 * action.add(actionOne); action.add(actionTwo); action.perform();
+		 */
 
-		System.out.println("Label 5 :" + btnDoubleTap.getAttribute("text"));
+		MobileElement title = driver.findElementById("android:id/alertTitle");
+		MobileElement msgSuccess = driver.findElementById("android:id/message");
+		MobileElement btnOK = driver.findElementById("android:id/button1");
 
-		System.out.println("Label 6 :" + btnLongPress.getAttribute("text"));
+		Assert.assertEquals(title.getText(), "Double Tap");
+		Assert.assertEquals(msgSuccess.getText(), "Double tap successful!");
+		Assert.assertEquals(btnOK.getText(), "OK");
 
-		System.out.println("Label 7 :" + btnPhotoView.getAttribute("text"));
+		btnOK.click();
 
-		System.out.println("=======================================");
-
-		//List<MobileElement> list1 = driver.findElementsByClassName("android.view.ViewGroup");
-
-		//list1.get(4).click();
-		
-		btnNativeView.click();
-
-		List<MobileElement> list2 = driver.findElementsByClassName("android.widget.TextView");
-
-		System.out.println("LIST SIZE  On Clicking : " + list2.size());
-
-		System.out.println("Label On Clicking : " + list2.get(4).getText());
+		Assert.assertTrue(btnTap.isDisplayed() && btnTap.isEnabled());
 
 	}
 
 	@AfterMethod
 	public void afterMethod() throws InterruptedException {
 		Thread.sleep(5000);
+		driver.closeApp();
 		driver.quit();
 	}
 

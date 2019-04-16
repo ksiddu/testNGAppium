@@ -1,11 +1,10 @@
 package com.sid.mobile.cases;
 
 import java.net.MalformedURLException;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -16,8 +15,10 @@ import com.sid.mobile.utils.PropertyUtils;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileBy;
 import io.appium.java_client.MobileElement;
+import io.appium.java_client.android.AndroidTouchAction;
+import io.appium.java_client.touch.offset.ElementOption;
 
-public class MobileAppTest {
+public class DemoAppDragAndDropTest {
 	AppiumDriver<MobileElement> driver;
 	PropertyUtils prop = new PropertyUtils("src/test/resources/config.properties");
 	WebDriverWait wait;
@@ -31,10 +32,7 @@ public class MobileAppTest {
 	}
 
 	@Test(enabled = true)
-	public void testLoginWithValidCredentials() throws InterruptedException {
-
-		// MobileElement loginBtn =
-		// driver.findElementByXPath("//android.view.ViewGroup[@content-desc='login']");
+	public void testDemoAppDragAndDrop() throws InterruptedException {
 
 		MobileElement loginBtn = driver.findElement(MobileBy.AccessibilityId("login"));
 
@@ -47,16 +45,6 @@ public class MobileAppTest {
 
 		Thread.sleep(2000);
 
-		/*
-		MobileElement btnNativeView = driver.findElementByAccessibilityId("chainedView");
-		MobileElement btnSlider = driver.findElementByAccessibilityId("slider1");
-		MobileElement btnVerticalSwipe = driver.findElementByAccessibilityId("verticalSwipe");
-		MobileElement btnDragAndDrop = driver.findElementByAccessibilityId("dragAndDrop");
-		MobileElement btnDoubleTap = driver.findElementByAccessibilityId("doubleTap");
-		MobileElement btnLongPress = driver.findElementByAccessibilityId("longPress");
-		MobileElement btnPhotoView = driver.findElementByAccessibilityId("photoView");
-		*/
-		
 		MobileElement btnNativeView = driver.findElement(MobileBy.AccessibilityId("chainedView"));
 		MobileElement btnSlider = driver.findElement(MobileBy.AccessibilityId("slider1"));
 		MobileElement btnVerticalSwipe = driver.findElement(MobileBy.AccessibilityId("verticalSwipe"));
@@ -65,41 +53,27 @@ public class MobileAppTest {
 		MobileElement btnLongPress = driver.findElement(MobileBy.AccessibilityId("longPress"));
 		MobileElement btnPhotoView = driver.findElement(MobileBy.AccessibilityId("photoView"));
 
-		System.out.println("=======================================");
+		btnDragAndDrop.click();
 
-		System.out.println("Label 1 :" + btnNativeView.getAttribute("text"));
+		// Code to drag & drop with Java-Client:7.0.0
 
-		System.out.println("Label 2 :" + btnSlider.getAttribute("text"));
+		MobileElement from = driver.findElement(MobileBy.AccessibilityId("dragMe"));
+		MobileElement to = driver.findElementByAccessibilityId("dropzone");
 
-		System.out.println("Label 3 :" + btnVerticalSwipe.getAttribute("text"));
+		AndroidTouchAction touch = new AndroidTouchAction(driver);
 
-		System.out.println("Label 4 :" + btnDragAndDrop.getAttribute("text"));
+		touch.longPress(ElementOption.element(from)).moveTo(ElementOption.element(to)).release().perform();
 
-		System.out.println("Label 5 :" + btnDoubleTap.getAttribute("text"));
+		MobileElement msgSuccess = driver.findElementByAccessibilityId("success");
 
-		System.out.println("Label 6 :" + btnLongPress.getAttribute("text"));
-
-		System.out.println("Label 7 :" + btnPhotoView.getAttribute("text"));
-
-		System.out.println("=======================================");
-
-		//List<MobileElement> list1 = driver.findElementsByClassName("android.view.ViewGroup");
-
-		//list1.get(4).click();
-		
-		btnNativeView.click();
-
-		List<MobileElement> list2 = driver.findElementsByClassName("android.widget.TextView");
-
-		System.out.println("LIST SIZE  On Clicking : " + list2.size());
-
-		System.out.println("Label On Clicking : " + list2.get(4).getText());
+		Assert.assertEquals(msgSuccess.getText(), "Circle dropped");
 
 	}
 
 	@AfterMethod
 	public void afterMethod() throws InterruptedException {
 		Thread.sleep(5000);
+		driver.closeApp();
 		driver.quit();
 	}
 
