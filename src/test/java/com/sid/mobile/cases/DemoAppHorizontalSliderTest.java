@@ -9,6 +9,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.testng.log4testng.Logger;
 
 import com.sid.mobile.utils.DriverProvider;
 import com.sid.mobile.utils.PropertyUtils;
@@ -20,10 +21,11 @@ import io.appium.java_client.android.AndroidTouchAction;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
 
-public class DemoAppHorizontalSwipingTest {
+public class DemoAppHorizontalSliderTest {
 	AppiumDriver<MobileElement> driver;
 	PropertyUtils prop = new PropertyUtils("src/test/resources/config.properties");
 	WebDriverWait wait;
+	private static final Logger log = Logger.getLogger(DemoAppHorizontalSliderTest.class);
 
 	@BeforeMethod
 	public void beforeMethod() throws MalformedURLException {
@@ -34,7 +36,7 @@ public class DemoAppHorizontalSwipingTest {
 	}
 
 	@Test(enabled = true)
-	public void testDemoAppHorizontalSwiping() throws InterruptedException {
+	public void testDemoAppHorizontalSlider() throws InterruptedException {
 
 		MobileElement loginBtn = driver.findElement(MobileBy.AccessibilityId("login"));
 
@@ -43,7 +45,7 @@ public class DemoAppHorizontalSwipingTest {
 		MobileElement header = driver.findElementByXPath(
 				"/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.view.ViewGroup[2]/android.view.ViewGroup[2]/android.widget.TextView");
 
-		System.out.println("Header TEXT :" + header.getText());
+		log.debug("Header TEXT :" + header.getText());
 
 		Thread.sleep(2000);
 

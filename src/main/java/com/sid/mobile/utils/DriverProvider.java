@@ -102,4 +102,26 @@ public class DriverProvider {
 		return mdriver;
 		
 	}
+	
+	public static AppiumDriver<WebElement> getAndroidDriver() throws MalformedURLException {
+		AppiumDriver<WebElement> driver;
+		Path currentRelativePath = Paths.get("");
+		String appPath = currentRelativePath.toAbsolutePath().toString();
+		appPath =  appPath + "/apps/VodQA.apk";
+		
+		System.out.println("APP PATH :" + appPath);
+		capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, "Android");
+		capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "8.1");
+		capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "emulator-5554");
+		capabilities.setCapability(MobileCapabilityType.APP, appPath);
+		capabilities.setCapability("noReset", false);
+		
+
+		// Instantiate android mobile driver
+		driver = new AndroidDriver<>(new URL("http://0.0.0.0:4723/wd/hub"), capabilities);
+
+		driver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
+		return driver;
+		
+	}
 }

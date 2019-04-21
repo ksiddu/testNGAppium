@@ -6,6 +6,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.MobileBy;
+import io.appium.java_client.MobileElement;
 
 public abstract class BasePage {
 	private static final int TIMEOUT = 5;
@@ -30,6 +32,16 @@ public abstract class BasePage {
 
 	public void verifyText(WebElement ele, String text) {
 		Assert.assertEquals(ele.getText(), text);
+	}
+
+	public void scrollToAndClick(String text) {
+		// String text = "Web View";
+
+		MobileElement ele = (MobileElement) driver.findElement(MobileBy.AndroidUIAutomator(
+				"new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(\""
+						+ text + "\").instance(0))"));
+
+		ele.click();
 	}
 
 }

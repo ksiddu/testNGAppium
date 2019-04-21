@@ -1,11 +1,10 @@
 package com.sid.mobile.cases;
 
 import java.net.MalformedURLException;
-import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -17,15 +16,13 @@ import com.sid.mobile.utils.PropertyUtils;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileBy;
 import io.appium.java_client.MobileElement;
-import io.appium.java_client.TouchAction;
-import io.appium.java_client.touch.LongPressOptions;
-import io.appium.java_client.touch.offset.ElementOption;
 
-public class DemoAppLongPressTest {
+public class DemoAppNativeViewTest {
 	AppiumDriver<MobileElement> driver;
 	PropertyUtils prop = new PropertyUtils("src/test/resources/config.properties");
 	WebDriverWait wait;
-	private static final Logger log = Logger.getLogger(DemoAppLongPressTest.class);
+
+	private static final Logger log = Logger.getLogger(DemoAppNativeViewTest.class);
 
 	@BeforeMethod
 	public void beforeMethod() throws MalformedURLException {
@@ -36,7 +33,7 @@ public class DemoAppLongPressTest {
 	}
 
 	@Test(enabled = true)
-	public void testDemoAppLongPress() throws InterruptedException {
+	public void testDemoAppDoubleTap() throws InterruptedException {
 
 		MobileElement loginBtn = driver.findElement(MobileBy.AccessibilityId("login"));
 
@@ -44,8 +41,6 @@ public class DemoAppLongPressTest {
 
 		MobileElement header = driver.findElementByXPath(
 				"/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.view.ViewGroup[2]/android.view.ViewGroup[2]/android.widget.TextView");
-
-		log.debug("Header TEXT :" + header.getText());
 
 		Thread.sleep(2000);
 
@@ -57,32 +52,35 @@ public class DemoAppLongPressTest {
 		MobileElement btnLongPress = driver.findElement(MobileBy.AccessibilityId("longPress"));
 		MobileElement btnPhotoView = driver.findElement(MobileBy.AccessibilityId("photoView"));
 
-		btnLongPress.click();
+		// go to Native View Page
+		btnNativeView.click();
 
-		// Code to long press with Java-Client:7.0.0
+		List<MobileElement> listOfView = driver.findElementsByClassName("android.widget.TextView");
 
-		MobileElement btnToPress = driver.findElement(MobileBy.AccessibilityId("longpress"));
-		LongPressOptions longPressOptions = new LongPressOptions();
-		longPressOptions.withDuration(Duration.ofSeconds(4)).withElement(ElementOption.element(btnToPress));
-		new TouchAction(driver).longPress(longPressOptions).perform();
+		log.debug("No. of Views: " + listOfView.size());
 
-		MobileElement title = driver.findElementById("android:id/alertTitle");
-		MobileElement msgSuccess = driver.findElementById("android:id/message");
-		MobileElement btnOK = driver.findElementById("android:id/button1");
+		log.debug("Header TEXT :" + listOfView.get(4).getText());
 
-		Assert.assertEquals(title.getText(), prop.getValue("long_press_title_text"));
-		Assert.assertEquals(msgSuccess.getText(), prop.getValue("long_press_message_text"));
-		Assert.assertEquals(btnOK.getText(), prop.getValue("long_press_button_text"));
+		log.debug(" for each loop elements ");
+		log.debug("================================");
+		for (MobileElement m : listOfView) {
+			log.debug("Element Text " + m.getText());
+		}
+		log.debug("================================");
 
-		btnOK.click();
-
-		Assert.assertTrue(btnToPress.isDisplayed() && btnToPress.isEnabled());
+		log.debug(" for loop elements ");
+		log.debug("================================");
+		for (int i = 0; i < listOfView.size(); i++) {
+			log.debug("Element " + i + " Text: " + listOfView.get(i).getText());
+		}
+		log.debug("================================");
 
 	}
 
 	@AfterMethod
 	public void afterMethod() throws InterruptedException {
 		Thread.sleep(5000);
+		driver.closeApp();
 		driver.quit();
 	}
 
